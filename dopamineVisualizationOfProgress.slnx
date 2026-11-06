@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/dopamineVisualizationOfProgress.API/dopamineVisualizationOfProgress.API.csproj" />
+    <Project Path="src/dopamineVisualizationOfProgress.Application/dopamineVisualizationOfProgress.Application.csproj" />
+    <Project Path="src/dopamineVisualizationOfProgress.Domain/dopamineVisualizationOfProgress.Domain.csproj" />
+    <Project Path="src/dopamineVisualizationOfProgress.Infrastructure/dopamineVisualizationOfProgress.Infrastructure.csproj" />
+  </Folder>
+</Solution>
