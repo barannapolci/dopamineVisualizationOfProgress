@@ -19,12 +19,16 @@ public class User
     public string PasswordHash { get; private set; } = string.Empty;
     public DateTime RegisterDate { get; private set; }
 
+    public static string NormalName(string name)
+    {
+        return name.Trim().ToLowerInvariant();
+    }
     public static Result<User> Create(string name, string passwordHash)
     {
         if (string.IsNullOrWhiteSpace(name))
             return Result.Failure<User>("Name cannot be empty");
 
-        var normalizedName = name.Trim().ToLowerInvariant();
+        var normalizedName = NormalName(name);
 
         if (normalizedName.Length > MaxNameLength)
             return Result.Failure<User>($"Name cannot be longer than {MaxNameLength} characters");
@@ -34,4 +38,5 @@ public class User
 
         return Result.Success(new User(Guid.NewGuid(), normalizedName, passwordHash, DateTime.UtcNow));
     }
+
 }
