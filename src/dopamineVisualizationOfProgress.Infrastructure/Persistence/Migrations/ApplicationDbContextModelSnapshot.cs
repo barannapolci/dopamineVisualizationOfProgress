@@ -30,6 +30,9 @@ namespace dopamineVisualizationOfProgress.Infrastructure.Persistence.Migrations
                     b.Property<float>("CardioTraining")
                         .HasColumnType("real");
 
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
                     b.Property<bool>("DietInfo")
                         .HasColumnType("boolean");
 
@@ -42,7 +45,7 @@ namespace dopamineVisualizationOfProgress.Infrastructure.Persistence.Migrations
                     b.Property<float>("StrengthTraining")
                         .HasColumnType("real");
 
-                    b.Property<float>("UncontroledWork")
+                    b.Property<float>("UncontrolledWork")
                         .HasColumnType("real");
 
                     b.HasKey("Id");

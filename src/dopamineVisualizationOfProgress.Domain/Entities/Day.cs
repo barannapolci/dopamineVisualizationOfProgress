@@ -1,43 +1,75 @@
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using CSharpFunctionalExtensions;
-
 
 public class Day
 {
-    public Day(){}
+    private const float MaxProductiveHours = 15f;
 
-    private Day(Guid id, float hardwork, float uncontroledWork, float strengthTraining, 
-    float cardioTraining, float dopamineeProcrastination, bool dietInfo)
+    private Day() { }
+
+    private Day(Guid id, DateOnly date, float hardWork, float uncontrolledWork,
+        float strengthTraining, float cardioTraining, float dopamineProcrastination, bool dietInfo)
     {
         Id = id;
-        HardWork = hardwork;
-        UncontroledWork = uncontroledWork;
+        Date = date;
+        HardWork = hardWork;
+        UncontrolledWork = uncontrolledWork;
         StrengthTraining = strengthTraining;
         CardioTraining = cardioTraining;
-        DopamineProcrastination = dopamineeProcrastination;
+        DopamineProcrastination = dopamineProcrastination;
         DietInfo = dietInfo;
     }
-    public Guid Id {get; private set;}
-    public float HardWork {get;private set;} = 0.0f;
 
-    public float UncontroledWork {get;private set;} = 0.0f;
-    
-    public float StrengthTraining {get;private set;} = 0.0f;
-    
-    public float CardioTraining {get; private set;} = 0.0f;
+    public Guid Id { get; private set; }
+    public DateOnly Date { get; private set; }
+    public float HardWork { get; private set; }
+    public float UncontrolledWork { get; private set; }
+    public float StrengthTraining { get; private set; }
+    public float CardioTraining { get; private set; }
+    public float DopamineProcrastination { get; private set; }
+    public bool DietInfo { get; private set; }
 
-    public float DopamineProcrastination {get;private set;} = 0.0f;
-
-    public bool DietInfo {get;private set;} = false;
-
-    public static Result<Day> Create(float hardwork, float uncontroledWork, float strengthTraining, 
-    float cardioTraining, float dopamineeProcrastination, bool dietInfo)
+    private static Result Validate(float hardWork, float uncontrolledWork,
+        float strengthTraining, float cardioTraining, float dopamineProcrastination)
     {
-        float sum = hardwork + uncontroledWork + strengthTraining + cardioTraining + dopamineeProcrastination;
-        if(sum > 15.0){return Result.Failure<Day>("you have only 15hours on productive days");}
+        var values = new[] { hardWork, uncontrolledWork, strengthTraining,
+                             cardioTraining, dopamineProcrastination };
 
-        return Result.Success<Day>(new Day(Guid.NewGuid(),hardwork,uncontroledWork,strengthTraining,cardioTraining,dopamineeProcrastination,dietInfo));
+        if (values.Any(v => v < 0 || float.IsNaN(v)))
+            return Result.Failure("Hours cannot be negative");
+
+        if (values.Sum() > MaxProductiveHours)
+            return Result.Failure($"You have only {MaxProductiveHours} hours on productive days");
+
+        return Result.Success();
+    }
+
+    public static Result<Day> Create(DateOnly date, float hardWork, float uncontrolledWork,
+        float strengthTraining, float cardioTraining, float dopamineProcrastination, bool dietInfo)
+    {
+        var validation = Validate(hardWork, uncontrolledWork, strengthTraining,
+                                  cardioTraining, dopamineProcrastination);
+        if (validation.IsFailure)
+            return Result.Failure<Day>(validation.Error);
+
+        return Result.Success(new Day(Guid.NewGuid(), date, hardWork, uncontrolledWork,
+            strengthTraining, cardioTraining, dopamineProcrastination, dietInfo));
+    }
+
+    public Result Update(float hardWork, float uncontrolledWork, float strengthTraining,
+        float cardioTraining, float dopamineProcrastination, bool dietInfo)
+    {
+        var validation = Validate(hardWork, uncontrolledWork, strengthTraining,
+                                  cardioTraining, dopamineProcrastination);
+        if (validation.IsFailure)
+            return validation;
+
+        HardWork = hardWork;
+        UncontrolledWork = uncontrolledWork;
+        StrengthTraining = strengthTraining;
+        CardioTraining = cardioTraining;
+        DopamineProcrastination = dopamineProcrastination;
+        DietInfo = dietInfo;
+
+        return Result.Success();
     }
 }
-
