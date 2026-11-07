@@ -6,10 +6,11 @@ public class Day
 
     private Day() { }
 
-    private Day(Guid id, DateOnly date, float hardWork, float uncontrolledWork,
+    private Day(Guid id, Guid userId, DateOnly date, float hardWork, float uncontrolledWork,
         float strengthTraining, float cardioTraining, float dopamineProcrastination, bool dietInfo)
     {
         Id = id;
+        UserId = userId;
         Date = date;
         HardWork = hardWork;
         UncontrolledWork = uncontrolledWork;
@@ -20,6 +21,7 @@ public class Day
     }
 
     public Guid Id { get; private set; }
+    public Guid UserId { get; private set; }
     public DateOnly Date { get; private set; }
     public float HardWork { get; private set; }
     public float UncontrolledWork { get; private set; }
@@ -43,15 +45,18 @@ public class Day
         return Result.Success();
     }
 
-    public static Result<Day> Create(DateOnly date, float hardWork, float uncontrolledWork,
+    public static Result<Day> Create(Guid userId, DateOnly date, float hardWork, float uncontrolledWork,
         float strengthTraining, float cardioTraining, float dopamineProcrastination, bool dietInfo)
     {
+        if (userId == Guid.Empty)
+            return Result.Failure<Day>("UserId is required");
+
         var validation = Validate(hardWork, uncontrolledWork, strengthTraining,
                                   cardioTraining, dopamineProcrastination);
         if (validation.IsFailure)
             return Result.Failure<Day>(validation.Error);
 
-        return Result.Success(new Day(Guid.NewGuid(), date, hardWork, uncontrolledWork,
+        return Result.Success(new Day(Guid.NewGuid(), userId, date, hardWork, uncontrolledWork,
             strengthTraining, cardioTraining, dopamineProcrastination, dietInfo));
     }
 
