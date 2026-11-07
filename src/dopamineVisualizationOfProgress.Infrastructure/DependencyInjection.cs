@@ -10,7 +10,11 @@ public static class DependencyInjection
     {
         services.AddDbContext<ApplicationDbContext>(o =>
             o.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
-            
+        
+        services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+
+        services.AddSingleton<IPasswordHasher, PasswordHasher>();
+
 
 
         return services;
