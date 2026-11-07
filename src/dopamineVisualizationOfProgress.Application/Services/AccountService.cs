@@ -13,11 +13,11 @@ public class AccountService : IAccauntSevice
         _jwtTokenGenerator = jwtTokenGenerator;
     }
 
-    public async Task<Result> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> RegisterAsync(AccountForm accountForm, CancellationToken cancellationToken = default)
     {
         var userResult = User.Create(
-            request.Name,
-            _passwordHasher.Hash(request.password)
+            accountForm.Name,
+            _passwordHasher.Hash(accountForm.password)
         );
 
         if (userResult.IsFailure)
@@ -29,4 +29,22 @@ public class AccountService : IAccauntSevice
         return await _userRepository.AddAsync(user,cancellationToken);
     }
     
+    public async Task<Result<AuthResponse>> LoginAsync(AccountForm accountForm, CancellationToken cancellationToken = default)
+    {
+        var res = await _userRepository.FindByNameAsync(User.NormalName(accountForm.Name), cancellationToken);
+        if (res.HasNoValue)
+        {
+            return Result.Failure<AuthResponse>("incorrect login or password");
+        }
+
+        var user = res.Value;
+        if (!_passwordHasher.Verify(accountForm.password, user.PasswordHash))
+        {
+            return Result.Failure<AuthResponse>("incorrect login or password");
+        }
+
+        var token = _jwtTokenGenerator.Generate(user);
+
+        return Result.Success(new AuthResponse(token.Token ,token.ExpiresAt)); 
+    } 
 }

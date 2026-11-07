@@ -1,8 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using System.Dynamic;
-using System.Net.Cache;
 
-public class RegisterRequest
+public class AccountForm
 {
     [Required, MaxLength(User.MaxNameLength)]
     public required string Name {get; init;}

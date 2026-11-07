@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/account")]
-public class AccountController : Controller
+public class AccountController : ControllerBase
 {
     private readonly IAccauntSevice _accauntService;
     public AccountController(IAccauntSevice accauntSevice)
@@ -12,11 +12,21 @@ public class AccountController : Controller
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterRequest registerRequest, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Register(AccountForm accountForm, CancellationToken cancellationToken = default)
     {
-        var res = await _accauntService.RegisterAsync(registerRequest,cancellationToken);
+        var res = await _accauntService.RegisterAsync(accountForm,cancellationToken);
         if(res.IsFailure){return Unauthorized(res.Error);}
 
         return Ok();
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(AccountForm accountForm, CancellationToken cancellationToken = default)
+    {
+        var res = await _accauntService.LoginAsync(accountForm,cancellationToken);
+        if(res.IsFailure){return Unauthorized(res.Error);}
+
+
+        return Ok(res.Value);
     }
 }
