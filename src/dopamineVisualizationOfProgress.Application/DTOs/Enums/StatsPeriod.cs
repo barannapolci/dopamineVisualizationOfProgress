@@ -1,0 +1,1 @@
+public enum StatsPeriod { Day, Week, Month, Year }
