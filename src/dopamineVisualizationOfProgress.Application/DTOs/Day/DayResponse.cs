@@ -5,4 +5,4 @@ public sealed record DayResponse(
     float StrengthTraining,
     float CardioTraining,
     float DopamineProcrastination,
-    bool DietInfo);
+    bool DietInfo);     

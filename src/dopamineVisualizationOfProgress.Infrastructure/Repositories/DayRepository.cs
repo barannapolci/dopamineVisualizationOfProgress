@@ -1,4 +1,3 @@
-using System.Data.Common;
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,8 +25,15 @@ public class DayRepository : IDayRepository
 
     public async Task UpdateAsync(Day day, CancellationToken ct = default)
     {
-        await _context.SaveChangesAsync(ct);   // день вже відстежується, Update не потрібен
+        await _context.SaveChangesAsync(ct);
     }
 
-
+    public async Task<IReadOnlyList<Day>> GetRangeAsync(Guid userId, DateOnly from, DateOnly to, CancellationToken ct = default)
+    {
+        return await _context.Days
+                .AsNoTracking()
+                .Where(d => d.UserId == userId && d.Date >= from && d.Date <= to)
+                .OrderBy(d => d.Date)
+                .ToListAsync(ct);
+    }
 }

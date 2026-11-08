@@ -6,4 +6,4 @@ public sealed record StatsResponse(
     float StrengthTraining,
     float CardioTraining,
     float DopamineProcrastination,
-    int DaysCount);
+    int DaysCount,int DietDays);
