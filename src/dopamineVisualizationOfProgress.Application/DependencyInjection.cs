@@ -6,7 +6,7 @@ public static class DependencyInjection
         this IServiceCollection services)
     {
         services.AddScoped<IAccauntSevice, AccountService>();
-
+        services.AddScoped<IDayService, DayService>();
 
         return services;
     }
